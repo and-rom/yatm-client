@@ -1,0 +1,23 @@
+#!/bin/bash
+ids=`bmcontrol scan | awk -F" = " '{print $2}'`
+
+i=1
+config=""
+for line in $ids
+do
+  read -p "Description for probe $i: " descr
+  read -p "Location for probe $i: " loc
+  read -p "Min value for probe $i: " min
+  read -p "Max value for probe $i: " max
+
+  config=$config"[Probe$i]"$'\n'
+  config=$config"Description=\"$descr\""$'\n'
+  config=$config"Location=\"$loc\""$'\n'
+  config=$config"Min=$min"$'\n'
+  config=$config"Max=$max"$'\n'
+  config=$config"Command=\"bmcontrol temp $line\""$'\n'
+
+  let i=i+1
+done
+
+echo "$config" > config.ini
